@@ -15,6 +15,7 @@ const pool = new pg.Pool({
     port: 5432
 });
 
+// Prepare the database
 pool.query(
     `CREATE TABLE IF NOT EXISTS users (
            id SERIAL             PRIMARY KEY,
@@ -24,7 +25,7 @@ pool.query(
         );`
     );
 
-
+// Load styles from public folder
 app.use(express.static("./public/"));
 
 // Define a custom Handlebars helper function to format dates
@@ -49,7 +50,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/update-user', (req, res) => {
 
     const id = req.query.id;
-
     pool.query(`SELECT * FROM users WHERE id = ${id}`, (error, results) => {
         // Handle any errors that occur
         if (error) {
@@ -62,9 +62,6 @@ app.get('/update-user', (req, res) => {
     });
     
 });
-
-
-
 
 // Update user data in database
 app.post('/update-user', (req, res) => {
@@ -90,12 +87,10 @@ app.post('/update-user', (req, res) => {
 // Delete user data in database
 app.get('/delete-user', (req, res) => {
     const id = req.query.id;
-  
     // Delete user data from database
     const result = pool.query(
     'DELETE FROM users WHERE id = $1',
     [id],
-
     (error) => {
         if (error) {
             console.log(error); res.status(500).json({ message: 'Error Delete data from PostgreSQL' });
